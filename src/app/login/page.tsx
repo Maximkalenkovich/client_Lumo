@@ -1,13 +1,21 @@
-"use client"; // Указываем, что это клиентский компонент
+"use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/store/store";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { user, setUser } = useUserStore();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/profile"); // Если пользователь уже есть, перенаправляем
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,13 +34,31 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      const token = data.token; // Предположим, что бэкенд возвращает токен в поле `token`
-
-      // Сохраняем токен в localStorage
+      const token = data.token;
       localStorage.setItem("jwtToken", token);
 
-      // Перенаправляем пользователя на главную страницу
-      router.push("/");
+      // После успешного входа загружаем профиль
+      const profileResponse = await fetch(
+        "http://localhost:3009/api/auth/profile",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!profileResponse.ok) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const profileData = await profileResponse.json();
+
+      // Сохраняем пользователя в Zustand
+      setUser(profileData);
+
+      // Перенаправляем на профиль
+      router.push("/profile");
     } catch (err) {
       setError("Invalid email or password");
     }
@@ -47,10 +73,7 @@ export default function LoginPage() {
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-black-700"
-          >
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email
           </label>
           <input
@@ -63,10 +86,7 @@ export default function LoginPage() {
           />
         </div>
         <div className="mb-6">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Password
           </label>
           <input
