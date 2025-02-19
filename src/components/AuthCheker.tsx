@@ -1,7 +1,9 @@
 "use client";
-import { useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import useUserStore from "../store/store";
+import useUserStore from "@/store/store";
+import { fetchProfile } from "@/api/auth";
 
 export default function AuthChecker({
   children,
@@ -16,7 +18,7 @@ export default function AuthChecker({
 
     if (!token) {
       clearUser();
-      router.push("/login");
+      router.push("/login"); // Используем `replace`, чтобы избежать истории переходов
       return;
     }
 
