@@ -1,8 +1,11 @@
+// components/LoginPage.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useUserStore from "@/store/store";
+import { login, fetchProfile } from "@/api/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,7 +17,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      router.push("/profile"); // Если пользователь уже есть, перенаправляем
+      router.push("/profile"); 
     }
   }, [user, router]);
 
@@ -22,43 +25,14 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3009/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
-
-      const data = await response.json();
+      const data = await login(email, password);
       const token = data.token;
       localStorage.setItem("jwtToken", token);
 
-      // После успешного входа загружаем профиль
-      const profileResponse = await fetch(
-        "http://localhost:3009/api/auth/profile",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const profileData = await fetchProfile(token);
 
-      if (!profileResponse.ok) {
-        throw new Error("Failed to fetch profile");
-      }
-
-      const profileData = await profileResponse.json();
-
-      // Сохраняем пользователя в Zustand
       setUser(profileData);
 
-      // Перенаправляем на профиль
       router.push("/profile");
     } catch (err) {
       setError("Invalid email or password");
