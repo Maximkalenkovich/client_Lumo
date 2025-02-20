@@ -1,65 +1,39 @@
+// components/LoginPage.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import useUserStore from "@/store/store";
+import { login, fetchProfile } from "@/api/auth";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
   const { user, setUser } = useUserStore();
   const [isLogin, setIsLogin] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname(); 
 
   useEffect(() => {
     if (user) {
-      router.push("/profile"); // Если пользователь уже есть, перенаправляем
+      router.push(`/${pathname.split("/")[1]}/profile`);
     }
-  }, [user, router]);
+  }, [user, router, pathname]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3009/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
-
-      const data = await response.json();
+      const data = await login(email, password);
       const token = data.token;
       localStorage.setItem("jwtToken", token);
 
-      // После успешного входа загружаем профиль
-      const profileResponse = await fetch(
-        "http://localhost:3009/api/auth/profile",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!profileResponse.ok) {
-        throw new Error("Failed to fetch profile");
-      }
-
-      const profileData = await profileResponse.json();
-
-      // Сохраняем пользователя в Zustand
+      const profileData = await fetchProfile(token);
       setUser(profileData);
 
-      // Перенаправляем на профиль
-      router.push("/profile");
+      router.push(`/${pathname.split("/")[1]}/profile`);
     } catch (err) {
       setError("Invalid email or password");
     }

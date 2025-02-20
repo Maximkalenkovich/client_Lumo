@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import useUserStore from "@/store/store";
 import { fetchProfile } from "@/api/auth";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function AuthChecker({
   children,
@@ -11,6 +11,7 @@ export default function AuthChecker({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname(); // Получаем текущий путь с локалью
   const { user, setUser, clearUser } = useUserStore();
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function AuthChecker({
 
     if (!token) {
       clearUser();
-      router.push("/login"); // Используем `replace`, чтобы избежать истории переходов
+      router.replace(`/${pathname.split("/")[1]}/login`); // Добавляем локаль в путь
       return;
     }
 
@@ -41,7 +42,7 @@ export default function AuthChecker({
           console.error("Error fetching profile:", err);
           localStorage.removeItem("jwtToken");
           clearUser();
-          router.push("/login");
+          router.replace(`/${pathname.split("/")[1]}/login`); // Используем локализованный путь
         }
       };
 

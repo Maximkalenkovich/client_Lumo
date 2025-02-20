@@ -1,4 +1,4 @@
-import { updateGender } from "@/api/user.api";
+import { updateGender } from "@/api/update-gender.api";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -7,7 +7,7 @@ export type User = {
   email: string;
   username: string;
   gender: "male" | "female" | null;
-  avatar: string | null;
+  avatars: any;
   bio: string | null;
   dateOfBirth: Date | null;
 };
@@ -34,7 +34,6 @@ const useUserStore = create<UserStore>()(
         if (!user) return;
 
         try {
-          // Вызов API для обновления пола
           await updateGender(user.id, gender);
           set({ user: { ...user, gender } });
         } catch (error) {
