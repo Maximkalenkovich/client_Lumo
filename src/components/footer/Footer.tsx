@@ -1,7 +1,8 @@
 "use client";
 import { logout } from "@/api/auth";
+import { Link } from "@/navigation";
 import useUserStore from "@/store/store";
-import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 import { FaHome, FaUser, FaSearch, FaCog, FaSignOutAlt } from "react-icons/fa";
 
