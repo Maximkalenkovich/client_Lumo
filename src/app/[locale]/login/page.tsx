@@ -3,23 +3,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import useUserStore from "@/store/store";
 import { login, fetchProfile } from "@/api/auth";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
   const { user, setUser } = useUserStore();
   const [isLogin, setIsLogin] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname(); 
 
   useEffect(() => {
     if (user) {
-      router.push("/profile"); 
+      router.push(`/${pathname.split("/")[1]}/profile`);
     }
-  }, [user, router]);
+  }, [user, router, pathname]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,10 +31,9 @@ export default function LoginPage() {
       localStorage.setItem("jwtToken", token);
 
       const profileData = await fetchProfile(token);
-
       setUser(profileData);
 
-      router.push("/profile");
+      router.push(`/${pathname.split("/")[1]}/profile`);
     } catch (err) {
       setError("Invalid email or password");
     }
