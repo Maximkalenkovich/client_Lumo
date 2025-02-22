@@ -1,4 +1,5 @@
 import { FaHeart } from "react-icons/fa"; // Иконка сердечка
+import { LanguageSwitcher } from "../LocaleSwitcher/LocaleSwitcher";
 
 export default function Header() {
   return (
@@ -11,6 +12,7 @@ export default function Header() {
           <span className="text-3xl font-bold text-red-500">LUMO</span>
           <FaHeart className="text-red-500 text-2xl" />
         </div>
+        <LanguageSwitcher />
       </div>
     </header>
   );
