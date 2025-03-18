@@ -1,89 +1,79 @@
-import React, { useState } from "react";
-import Image from "next/image";
-import { uploadAvatar } from "./../../api/upload-photo.api";
+"use client";
+import React, { useRef, useState } from "react";
+import { uploadAvatar } from "@/api/upload-photo.api";
+import { FiUpload } from "react-icons/fi"; // Импортируем иконку загрузки
+import useUserStore from "@/store/store";
+import { fetchProfile } from "@/api/auth";
 
-type AvatarProps = {
-  userId: number; // ID пользователя для загрузки аватара
-  images?: any; // Массив URL изображений
-  defaultImage: string; // URL дефолтного изображения
+type UploadAvatarProps = {
+  userId: number;
+  onUploadSuccess: (image: { id: string; url: string }) => void; // Измененный тип
 };
 
-export const Avatar: React.FC<AvatarProps> = ({
+export const UploadAvatar: React.FC<UploadAvatarProps> = ({
   userId,
-  images = [],
-  defaultImage,
+  onUploadSuccess,
 }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [uploadedImages, setUploadedImages] = useState<string[]>(images);
   const [isUploading, setIsUploading] = useState(false);
-  const handleNextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const setUser = useUserStore((state) => state.setUser);
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
   };
 
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (!selectedFile) return;
+
+    setIsUploading(true);
+    try {
+      const response = await uploadAvatar(userId, selectedFile);
+console.log(response);
+      // Предполагаем, что сервер возвращает объект с id и url
+      const newAvatar = { id: response.avatar.id, url: response.avatar.url };
+       
+      console.log(newAvatar)
+      onUploadSuccess(newAvatar);
+
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        const updatedProfile = await fetchProfile(token);
+        setUser(updatedProfile);
+      }
+    } catch (error) {
+      console.error("Ошибка при загрузке аватара:", error);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   };
-const currentImage = images[currentImageIndex]?.url || defaultImage;
+
   return (
-    <div
-      style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
-    >
-      <div style={{ position: "relative", width: 150, height: 150 }}>
-        <img
-          src={currentImage }
-          alt="Avatar"
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "50%",
-            objectFit: "cover",
-          }}
-        />
-        {images.length > 1 && (
+    <div className="flex flex-col gap-4 p-5 max-w-xs bg-gradient-to-br from-pink-100 to-rose-100 rounded-2xl shadow-md">
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        disabled={isUploading}
+        className="hidden"
+      />
+      <button
+        onClick={handleButtonClick}
+        disabled={isUploading}
+        className="flex items-center justify-center gap-2 py-3 px-6 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full text-white font-semibold tracking-wide transition-all duration-300 hover:-translate-y-1 hover:shadow-lg disabled:bg-gray-300 disabled:opacity-70 disabled:cursor-not-allowed active:translate-y-0.5"
+      >
+        {isUploading ? (
+          "Uploading..."
+        ) : (
           <>
-            <button
-              onClick={handlePrevImage}
-              style={{
-                position: "absolute",
-                left: 0,
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "rgba(0, 0, 0, 0.5)",
-                color: "white",
-                border: "none",
-                borderRadius: "50%",
-                width: 30,
-                height: 30,
-                cursor: "pointer",
-              }}
-            >
-              &lt;
-            </button>
-            <button
-              onClick={handleNextImage}
-              style={{
-                position: "absolute",
-                right: 0,
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "rgba(0, 0, 0, 0.5)",
-                color: "white",
-                border: "none",
-                borderRadius: "50%",
-                width: 30,
-                height: 30,
-                cursor: "pointer",
-              }}
-            >
-              &gt;
-            </button>
+            <FiUpload className="w-5 h-5" />
+            <span>Upload Avatar</span>
           </>
         )}
-      </div>
+      </button>
     </div>
   );
 };
