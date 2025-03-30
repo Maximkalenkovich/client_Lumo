@@ -5,7 +5,8 @@ import { useLocale } from "next-intl";
 import React from "react";
 import { usePathname, useRouter } from "@/navigation";
 import { useParams } from "next/navigation";
-import { locales } from "@/config";
+import { locales } from "@/configs/localization.config";
+
 
 export const LanguageSwitcher = () => {
   const locale = useLocale();

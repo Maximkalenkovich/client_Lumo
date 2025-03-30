@@ -4,6 +4,7 @@ import { uploadAvatar } from "@/api/upload-photo.api";
 import { FiUpload } from "react-icons/fi"; // Импортируем иконку загрузки
 import useUserStore from "@/store/store";
 import { fetchProfile } from "@/api/auth";
+import { useTranslations } from "next-intl";
 
 type UploadAvatarProps = {
   userId: number;
@@ -14,9 +15,11 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
   userId,
   onUploadSuccess,
 }) => {
+  const t = useTranslations("Profile");
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const setUser = useUserStore((state) => state.setUser);
+
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
@@ -29,8 +32,6 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
     setIsUploading(true);
     try {
       const response = await uploadAvatar(userId, selectedFile);
-console.log(response);
-      // Предполагаем, что сервер возвращает объект с id и url
       const newAvatar = { id: response.avatar.id, url: response.avatar.url };
        
       console.log(newAvatar)
@@ -70,7 +71,7 @@ console.log(response);
         ) : (
           <>
             <FiUpload className="w-5 h-5" />
-            <span>Upload Avatar</span>
+            <span>{t("addPhoto")}</span>
           </>
         )}
       </button>

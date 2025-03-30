@@ -2,7 +2,7 @@
 
 import GenderSwitcher from "@/components/common/GenderSwitcher";
 import useUserStore from "@/store/store";
-import { Link } from "@/navigation"; // Локализованный Link
+import { Link, routes } from "@/navigation";
 import { useTranslations } from "use-intl";
 
 export default function ProfilePage() {
@@ -24,12 +24,7 @@ export default function ProfilePage() {
             Name: {user?.username}
           </p>
           <GenderSwitcher />
-          {/* Add "Фото" and a link to the photos page */}
-          <Link
-            href={{
-              pathname: "/profile/photos/[userId]", 
-              params: { userId: user.id.toString() }, 
-            }}
+          <Link  href={routes.photos(String(user.id))}
             className="text-blue-500 hover:underline"
           >
             Фото

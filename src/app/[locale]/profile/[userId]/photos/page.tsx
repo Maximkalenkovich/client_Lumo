@@ -21,7 +21,7 @@ const convertBackendUrlToFrontend = (backendUrl: string): string => {
 };
 
 export default function PhotosPage() {
-  const { userId } = useParams(); // Получаем userId из URL
+  const { userId } = useParams();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const [images, setImages] = useState<AvatarImage[]>([]);
@@ -85,12 +85,10 @@ export default function PhotosPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
         <h1 className="text-2xl font-bold mb-4">Фото</h1>
-        {/* Список фото */}
-        // Внутри PhotosPage
         {transformedImages.length > 0 ? (
           <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {transformedImages
-              .filter((image) => image.url) // Фильтруем изображения без URL
+              .filter((image) => image.url)
               .map((image) => (
                 <li key={image.id} className="relative">
                   <img
@@ -111,7 +109,6 @@ export default function PhotosPage() {
         ) : (
           <p>вуацу</p>
         )}
-        {/* Модальное окно для увеличенного фото */}
         {isImageOpen && selectedImage && (
           <div
             className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"

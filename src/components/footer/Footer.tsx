@@ -1,6 +1,6 @@
 "use client";
 import { logout } from "@/api/auth";
-import { Link } from "@/navigation";
+import { Link, routes } from "@/navigation";
 import useUserStore from "@/store/store";
 
 import { useRouter } from "next/navigation";
@@ -30,7 +30,8 @@ export default function Footer() {
 
             {/* Иконка 2: Поиск */}
             <Link
-              href="/search"
+            //@ts-ignore
+              href={routes.search()}
               className="flex flex-col items-center text-gray-700 hover:text-blue-500"
             >
               <FaSearch className="text-2xl" />
@@ -39,7 +40,8 @@ export default function Footer() {
 
             {/* Иконка 3: Профиль */}
             <Link
-              href="/profile"
+            //@ts-ignore
+              href={routes.profile()}
               className="flex flex-col items-center text-gray-700 hover:text-blue-500"
             >
               <FaUser className="text-2xl" />

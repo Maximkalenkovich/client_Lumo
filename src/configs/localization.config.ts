@@ -13,6 +13,10 @@ export const pathnames = {
     en: '/search',
     ru: '/search',
   },
+  '/profile/[userId]/photos': {
+    en: '/profile/[userId]/photos',
+    ru: '/profile/[userId]/photos',
+  }
   
 } satisfies Pathnames<typeof locales>;
 
