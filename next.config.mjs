@@ -1,12 +1,8 @@
-/**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
- */
 import withNextIntl from "next-intl/plugin";
 
-// await import("./src/env.js");
-
 const nextIntlConfig = withNextIntl();
+
+const apiUrl = process.env.API_URL ?? "http://localhost:3009";
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -17,6 +13,12 @@ const config = {
     fetches: {
       fullUrl: true,
     },
+  },
+  async rewrites() {
+    return [
+      { source: "/api/:path*", destination: `${apiUrl}/api/:path*` },
+      { source: "/uploads/:path*", destination: `${apiUrl}/uploads/:path*` },
+    ];
   },
 };
 

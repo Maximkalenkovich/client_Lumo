@@ -9,8 +9,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        app: {
+          bg: "var(--app-bg)",
+          text: "var(--app-text)",
+          hint: "var(--app-hint)",
+          secondary: "var(--app-secondary-bg)",
+          button: "var(--app-button)",
+          "button-text": "var(--app-button-text)",
+          link: "var(--app-link)",
+          destructive: "var(--app-destructive)",
+        },
       },
     },
   },
