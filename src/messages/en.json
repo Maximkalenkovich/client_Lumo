@@ -1,5 +1,66 @@
 {
-    "Profile":{
-        "title":"Profile"
-    }
+  "App": {
+    "loading": "Loading…",
+    "openInTelegram": "Open Lumo from the Telegram bot",
+    "openInTelegramHint": "The app works only inside Telegram.",
+    "authError": "Could not sign in",
+    "retry": "Retry"
+  },
+  "Nav": {
+    "feed": "People",
+    "matches": "Matches",
+    "profile": "Profile"
+  },
+  "Feed": {
+    "empty": "No more profiles",
+    "emptyHint": "Come back later — new people will appear.",
+    "refresh": "Refresh",
+    "like": "Like",
+    "skip": "Skip",
+    "report": "Report",
+    "matchTitle": "It's a match!",
+    "matchText": "You and {name} liked each other",
+    "write": "Message",
+    "later": "Later"
+  },
+  "Report": {
+    "title": "Report profile",
+    "fake": "Fake or stolen photos",
+    "spam": "Spam or advertising",
+    "inappropriate": "Inappropriate content",
+    "underage": "Under 18",
+    "other": "Other",
+    "cancel": "Cancel",
+    "sent": "Report sent"
+  },
+  "Matches": {
+    "title": "Matches",
+    "empty": "No matches yet",
+    "emptyHint": "Keep liking — when someone likes you back, they will appear here.",
+    "write": "Message",
+    "noUsername": "The chat link is in the bot message"
+  },
+  "Profile": {
+    "title": "My profile",
+    "incomplete": "Complete your profile to see other people",
+    "photos": "Photos",
+    "photosHint": "Up to 6 photos. The first one is the main photo.",
+    "addPhoto": "Add",
+    "name": "Name",
+    "gender": "I am",
+    "male": "Man",
+    "female": "Woman",
+    "lookingFor": "Looking for",
+    "lookingMale": "Men",
+    "lookingFemale": "Women",
+    "lookingAny": "Everyone",
+    "birthDate": "Date of birth",
+    "city": "City",
+    "bio": "About me",
+    "bioPlaceholder": "A few words about you and your hobbies",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "uploading": "Uploading…"
+  }
 }

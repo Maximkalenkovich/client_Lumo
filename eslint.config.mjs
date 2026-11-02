@@ -11,6 +11,12 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      // Profile photos come from arbitrary hosts (local uploads, S3, seeds).
+      "@next/next/no-img-element": "off",
+    },
+  },
 ];
 
 export default eslintConfig;

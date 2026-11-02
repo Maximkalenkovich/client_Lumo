@@ -1,53 +1,21 @@
-import { updateGender } from "@/api/update-gender.api";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-
-export type User = {
-  id: number;
-  email: string;
-  username: string;
-  gender: "male" | "female" | null;
-  avatars: any;
-  bio: string | null;
-  dateOfBirth: Date | null;
-};
+import type { MyProfile } from "@/types";
 
 type UserStore = {
-  user: User | null;
-  setUser: (user: User) => void;
-  clearUser: () => void;
-  isEditingGender: boolean;
-  setIsEditingGender: (isEditing: boolean) => void;
-  updateGender: (gender: "male" | "female") => Promise<void>;
+  token: string | null;
+  user: MyProfile | null;
+  setSession: (token: string, user: MyProfile) => void;
+  setToken: (token: string) => void;
+  setUser: (user: MyProfile) => void;
 };
 
-const useUserStore = create<UserStore>()(
-  persist(
-    (set, get) => ({
-      user: null,
-      setUser: (user) => set({ user }),
-      clearUser: () => set({ user: null }),
-      isEditingGender: false,
-      setIsEditingGender: (isEditing) => set({ isEditingGender: isEditing }),
-      updateGender: async (gender) => {
-        const user = get().user;
-        if (!user) return;
-
-        try {
-          await updateGender(user.id, gender);
-          set({ user: { ...user, gender } });
-        } catch (error) {
-          console.error("Error updating gender:", error);
-          throw error;
-        }
-      },
-    }),
-    {
-      name: "user-storage",
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
+/** The session lives in memory only: Telegram re-authenticates the user on every launch. */
+const useUserStore = create<UserStore>()((set) => ({
+  token: null,
+  user: null,
+  setSession: (token, user) => set({ token, user }),
+  setToken: (token) => set({ token }),
+  setUser: (user) => set({ user }),
+}));
 
 export default useUserStore;
-
